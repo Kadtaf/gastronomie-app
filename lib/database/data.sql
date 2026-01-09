@@ -71,7 +71,7 @@ VALUES(
 "public/assets/img/img_recipe/creme de lait.jpg",
 "pour 3 personnes",
 "des oeufs",
- "2022-07-24 18:00:23",
+"2022-07-24 18:00:23",
 "2022-07-25 18:45:33"
 
 
@@ -79,13 +79,13 @@ VALUES(
 (
   2,
   3,
-  "Crème brulée",
+"Crème brulée",
 "c'est un desser",
 "35",
 "public/assets/img/img_recipe/creme de lait.jpg",
 "pour 3 personnes",
 "des oeufs",
- "2022-07-24 18:00:23",
+"2022-07-24 18:00:23",
 "2022-07-25 18:45:33"
 
 
@@ -99,7 +99,7 @@ VALUES(
 "public/assets/img/img_recipe/creme de lait.jpg",
 "pour 3 personnes",
 "des oeufs",
- "2022-07-24 18:00:23",
+"2022-07-24 18:00:23",
 "2022-07-25 18:45:33"
 
 
@@ -255,9 +255,6 @@ CREATE TABLE IF NOT EXISTS `step` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
---
--- Contraintes pour les tables déchargées
---
 
 --
 -- Contraintes pour la table `comment`
