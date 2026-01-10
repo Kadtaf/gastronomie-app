@@ -1,0 +1,31 @@
+.admin-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.admin-welcome {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.admin-card {
+    display: block;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ddd;
+    transition: 0.2s;
+}
+
+.admin-card:hover {
+    background: #e9ecef;
+    border-color: #bbb;
+}

@@ -1,37 +1,36 @@
 <?php
+
 namespace App\Classes\Entities;
 
-
-
-class User 
+class User
 {
     private ?int $id = null;
 
-    protected string $lastname;
-    protected string $firstname;
-    protected string $email;
-    protected string $password;
-    protected string $role;
+    private string $lastName;
+    private string $firstName;
+    private string $email;
+    private string $password;
+    private string $role;
 
-    protected string $created_at;
-    protected string $updated_at;
+    private string $createdAt;
+    private string $updatedAt;
 
     public function __construct(
-        string $lastname,
-        string $firstname,
+        string $lastName,
+        string $firstName,
         string $email,
         string $password,
         string $role,
-        string $created_at,
-        string $updated_at
+        string $createdAt,
+        string $updatedAt
     ) {
-        $this->lastname = $lastname;
-        $this->firstname = $firstname;
+        $this->lastName = $lastName;
+        $this->firstName = $firstName;
         $this->email = $email;
-        $this->password = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
+        $this->password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
         $this->role = $role;
-        $this->created_at = $created_at;
-        $this->updated_at = $updated_at;
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
     }
 
     public function getId(): ?int
@@ -39,25 +38,31 @@ class User
         return $this->id;
     }
 
-    public function getLastname(): string
+    public function setId(int $id): self
     {
-        return $this->lastname;
-    }
-
-    public function setLastname(string $lastname): self
-    {
-        $this->lastname = $lastname;
+        $this->id = $id;
         return $this;
     }
 
-    public function getFirstname(): string
+    public function getLastName(): string
     {
-        return $this->firstname;
+        return $this->lastName;
     }
 
-    public function setFirstname(string $firstname): self
+    public function setLastName(string $lastName): self
     {
-        $this->firstname = $firstname;
+        $this->lastName = $lastName;
+        return $this;
+    }
+
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): self
+    {
+        $this->firstName = $firstName;
         return $this;
     }
 
@@ -79,7 +84,7 @@ class User
 
     public function setPassword(string $password): self
     {
-        $this->password = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
+        $this->password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
         return $this;
     }
 
@@ -96,23 +101,23 @@ class User
 
     public function getCreatedAt(): string
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(string $created_at): self
+    public function setCreatedAt(string $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
         return $this;
     }
 
     public function getUpdatedAt(): string
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(string $updated_at): self
+    public function setUpdatedAt(string $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }

@@ -1,60 +1,113 @@
 <?php
+
 namespace App\Classes\Core;
 
 class Router
 {
-    public function run()
+    private array $routes = [];
+
+    public function __construct()
     {
-        $uri = $_SERVER['REQUEST_URI'];
+        $this->routes = require __DIR__ . '/../../../routes/web.php';
+    }
 
-        // Supprimer le slash final
-        if ($uri !== '/' && substr($uri, -1) === '/') {
-            $uri = rtrim($uri, '/');
-            header("Location: $uri", true, 301);
-            exit;
+    public function run(): void
+    {
+        $request = new Request();
+
+        foreach ($this->expandRoutes($this->routes) as $route) {
+
+            // Gestion GET/POST ou tableau de méthodes
+            if (is_array($route->method)) {
+                if (!in_array($request->method, $route->method)) {
+                    continue;
+                }
+            } else {
+                if ($route->method !== $request->method) {
+                    continue;
+                }
+            }
+
+            // Paramètres dynamiques
+            $pattern = preg_replace('#\{[^/]+\}#', '([^/]+)', $route->uri);
+            $pattern = "#^" . $pattern . "$#";
+
+            if (preg_match($pattern, $request->uri, $matches)) {
+
+                array_shift($matches);
+
+                // Middlewares
+                foreach ($route->middlewares as $middlewareName) {
+                    $middlewareClass = "\\App\\Classes\\Core\\Middleware\\" . ucfirst($middlewareName) . "Middleware";
+
+                    if (!class_exists($middlewareClass)) {
+                        throw new \Exception("Middleware introuvable : $middlewareClass");
+                    }
+
+                    $middleware = new $middlewareClass();
+
+                    if (!$middleware->handle($request)) {
+                        return;
+                    }
+                }
+
+                // Controller
+                $controllerClass = "\\App\\Classes\\Controllers\\" . $route->controller;
+
+                if (!class_exists($controllerClass)) {
+                    $this->render404("Controller introuvable : {$route->controller}");
+                }
+
+                $controller = new $controllerClass();
+
+                if (!method_exists($controller, $route->action)) {
+                    $this->render404("Méthode introuvable : {$route->action}");
+                }
+
+                call_user_func_array([$controller, $route->action], $matches);
+                return;
+            }
         }
 
-        // Supprimer les paramètres GET éventuels
-        $uri = explode('?', $uri)[0];
+        $this->render404("Aucune route ne correspond à l’URL : {$request->uri}");
+    }
 
-        // Découper l’URL
-        $parts = array_values(array_filter(explode('/', $uri)));
+    private function expandRoutes(array $routes): array
+    {
+        $expanded = [];
 
-        // Si aucune partie → HomeController@index
-        if (empty($parts)) {
-            $controllerName = "HomeController";
-            $action = "index";
-            $params = [];
-        } else {
-            // Controller
-            $controllerName = ucfirst($parts[0]) . "Controller";
+        foreach ($routes as $route) {
 
-            // Action
-            $action = $parts[1] ?? "index";
+            if ($route instanceof Route) {
+                $expanded[] = $route;
+                continue;
+            }
 
-            // Paramètres
-            $params = array_slice($parts, 2);
+            // Groupe de routes
+            $prefix = $route['prefix'] ?? '';
+            $middlewares = $route['middleware'] ?? [];
+            $subRoutes = $route['routes'];
+
+            foreach ($subRoutes as $subRoute) {
+
+                // Cloner pour éviter les modifications multiples
+                $clone = clone $subRoute;
+
+                $clone->uri = $prefix . $clone->uri;
+                $clone->middlewares = array_merge($clone->middlewares, (array) $middlewares);
+
+                $expanded[] = $clone;
+            }
         }
 
-        $controllerClass = "\\App\\Classes\\Controllers\\" . $controllerName;
+        return $expanded;
+    }
 
-        // Vérifier si le controller existe
-        if (!class_exists($controllerClass)) {
-            http_response_code(404);
-            echo "Controller introuvable : $controllerName";
-            exit;
-        }
-
-        $controller = new $controllerClass();
-
-        // Vérifier si l’action existe
-        if (!method_exists($controller, $action)) {
-            http_response_code(404);
-            echo "Méthode introuvable : $action";
-            exit;
-        }
-
-        // Appeler l’action avec les paramètres
-        call_user_func_array([$controller, $action], $params);
+    private function render404(string $message): void
+    {
+        http_response_code(404);
+        echo "<h1>404 - Page non trouvée</h1>";
+        echo "<p>$message</p>";
+        exit;
     }
 }

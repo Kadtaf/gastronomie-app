@@ -1,44 +1,51 @@
 <?php
+
 namespace App\Classes\Entities;
 
-
-
-class Recipe 
+class Recipe
 {
     private ?int $id = null;
 
-    protected string $title;
-    protected string $description;
-    protected int $duration; // en minutes
-    protected ?string $file_path_img;
+    private string $title;
+    private string $description;
+    private int $duration; // minutes
+    private ?string $imagePath;
 
-    protected int $user_id;
-    protected ?int $category_id = null;
+    private int $userId;
+    private ?int $categoryId;
 
-    protected string $created_at;
-    protected string $updated_at;
+    private string $createdAt;
+    private string $updatedAt;
 
     public function __construct(
         string $title,
         string $description,
         int $duration,
-        ?string $file_path_img,
-        int $user_id,
-        string $created_at,
-        string $updated_at
+        ?string $imagePath,
+        int $userId,
+        ?int $categoryId,
+        string $createdAt,
+        string $updatedAt
     ) {
         $this->title = $title;
         $this->description = $description;
         $this->duration = $duration;
-        $this->file_path_img = $file_path_img;
-        $this->user_id = $user_id;
-        $this->created_at = $created_at;
-        $this->updated_at = $updated_at;
+        $this->imagePath = $imagePath;
+        $this->userId = $userId;
+        $this->categoryId = $categoryId;
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getTitle(): string
@@ -74,58 +81,58 @@ class Recipe
         return $this;
     }
 
-    public function getFilePathImg(): ?string
+    public function getImagePath(): ?string
     {
-        return $this->file_path_img;
+        return $this->imagePath;
     }
 
-    public function setFilePathImg(?string $file_path_img): self
+    public function setImagePath(?string $imagePath): self
     {
-        $this->file_path_img = $file_path_img;
-        return $this;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(string $created_at): self
-    {
-        $this->created_at = $created_at;
-        return $this;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(string $updated_at): self
-    {
-        $this->updated_at = $updated_at;
+        $this->imagePath = $imagePath;
         return $this;
     }
 
     public function getUserId(): int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
-    public function setUserId(int $user_id): self
+    public function setUserId(int $userId): self
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
         return $this;
     }
 
     public function getCategoryId(): ?int
     {
-        return $this->category_id;
+        return $this->categoryId;
     }
 
-    public function setCategoryId(?int $category_id): self
+    public function setCategoryId(?int $categoryId): self
     {
-        $this->category_id = $category_id;
+        $this->categoryId = $categoryId;
+        return $this;
+    }
+
+    public function getCreatedAt(): string
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(string $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): string
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(string $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }

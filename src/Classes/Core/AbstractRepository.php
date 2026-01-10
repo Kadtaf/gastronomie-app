@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Classes\Core;
 
 use PDO;
@@ -17,6 +18,7 @@ abstract class AbstractRepository
     {
         $sql = "SELECT * FROM {$this->table}";
         $stmt = $this->db->query($sql);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -24,9 +26,10 @@ abstract class AbstractRepository
     {
         $sql = "SELECT * FROM {$this->table} WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([":id" => $id]);
+        $stmt->execute([':id' => $id]);
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
         return $data ?: null;
     }
 
@@ -40,7 +43,7 @@ abstract class AbstractRepository
             $params[":$column"] = $value;
         }
 
-        $sql = "SELECT * FROM {$this->table} WHERE " . implode(" AND ", $columns);
+        $sql = "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $columns);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
@@ -50,10 +53,10 @@ abstract class AbstractRepository
     public function insert(array $data): int
     {
         $columns = array_keys($data);
-        $placeholders = array_map(fn($c) => ":$c", $columns);
+        $placeholders = array_map(fn ($c) => ":$c", $columns);
 
-        $sql = "INSERT INTO {$this->table} (" . implode(", ", $columns) . ")
-                VALUES (" . implode(", ", $placeholders) . ")";
+        $sql = "INSERT INTO {$this->table} (" . implode(', ', $columns) . ")
+                VALUES (" . implode(', ', $placeholders) . ")";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($data);
@@ -64,31 +67,41 @@ abstract class AbstractRepository
     public function update(int $id, array $data): bool
     {
         $columns = [];
+        $params = [];
+
         foreach ($data as $column => $value) {
             $columns[] = "$column = :$column";
+            $params[":$column"] = $value;
         }
 
-        $data[":id"] = $id;
+        $params[':id'] = $id;
 
-        $sql = "UPDATE {$this->table} SET " . implode(", ", $columns) . " WHERE id = :id";
+        $sql = "UPDATE {$this->table} 
+                SET " . implode(', ', $columns) . " 
+                WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute($data);
+
+        return $stmt->execute($params);
     }
 
     public function delete(int $id): bool
     {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([":id" => $id]);
+
+        return $stmt->execute([':id' => $id]);
     }
 
     public function hydrate(string $class, array $data)
     {
+        // On crée l'objet SANS arguments (compatible avec tes entités)
         $object = new $class();
 
         foreach ($data as $key => $value) {
-            $setter = "set" . str_replace(" ", "", ucwords(str_replace("_", " ", $key)));
+            // Convertit snake_case → camelCase
+            // created_at → setCreatedAt
+            $setter = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
 
             if (method_exists($object, $setter)) {
                 $object->$setter($value);

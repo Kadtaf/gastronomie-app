@@ -1,32 +1,37 @@
 <?php
+
 namespace App\Classes\Entities;
 
-
-
-class Ingredient 
+class Ingredient
 {
     private ?int $id = null;
 
-    protected string $name;
-    protected float $quantity;
-    protected string $unit;
-    protected int $recipe_id;
+    private string $name;
+    private float $quantity;
+    private string $unit;
+    private int $recipeId;
 
     public function __construct(
         string $name,
         float $quantity,
         string $unit,
-        int $recipe_id
+        int $recipeId
     ) {
         $this->name = $name;
         $this->quantity = $quantity;
         $this->unit = $unit;
-        $this->recipe_id = $recipe_id;
+        $this->recipeId = $recipeId;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getName(): string
@@ -64,12 +69,12 @@ class Ingredient
 
     public function getRecipeId(): int
     {
-        return $this->recipe_id;
+        return $this->recipeId;
     }
 
-    public function setRecipeId(int $recipe_id): self
+    public function setRecipeId(int $recipeId): self
     {
-        $this->recipe_id = $recipe_id;
+        $this->recipeId = $recipeId;
         return $this;
     }
 }

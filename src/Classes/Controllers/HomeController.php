@@ -1,10 +1,15 @@
 <?php
+
 namespace App\Classes\Controllers;
 
 class HomeController extends AbstractController
 {
-    public function index()
+    public function index(): void
     {
-        return $this->renderView("Home/index");
+        $user = $_SESSION['user'] ?? null;
+
+        $this->renderView('Home/index', [
+            'title' => 'Bienvenue sur mon site'
+        ], layout: 'main');
     }
 }

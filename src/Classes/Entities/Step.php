@@ -1,29 +1,34 @@
 <?php
+
 namespace App\Classes\Entities;
 
-
-
-class Step 
+class Step
 {
     private ?int $id = null;
 
-    protected int $order;
-    protected string $description;
-    protected int $recipe_id;
+    private int $order;
+    private string $description;
+    private int $recipeId;
 
     public function __construct(
         int $order,
         string $description,
-        int $recipe_id
+        int $recipeId
     ) {
         $this->order = $order;
         $this->description = $description;
-        $this->recipe_id = $recipe_id;
+        $this->recipeId = $recipeId;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getOrder(): int
@@ -50,12 +55,12 @@ class Step
 
     public function getRecipeId(): int
     {
-        return $this->recipe_id;
+        return $this->recipeId;
     }
 
-    public function setRecipeId(int $recipe_id): self
+    public function setRecipeId(int $recipeId): self
     {
-        $this->recipe_id = $recipe_id;
+        $this->recipeId = $recipeId;
         return $this;
     }
 }

@@ -1,45 +1,54 @@
 <?php
+
 namespace App\Classes\Controllers;
 
-use App\Classes\Controllers\AbstractController;
 use App\Classes\Repositories\CategoryRepository;
 use App\Classes\Entities\Category;
 
 class CategoryController extends AbstractController
 {
-    public function index()
-    {
-        $categoryRepository = new CategoryRepository();
-        $categories = $categoryRepository->findAllCategories();
+    private CategoryRepository $categoryRepository;
 
-        return $this->renderView("Categories/index", [
-            "categories" => $categories
-        ]);
+    public function __construct()
+    {
+        $this->categoryRepository = new CategoryRepository();
     }
 
-    public function add()
+    public function index(): void
     {
-        if ($_SERVER["REQUEST_METHOD"] === "GET") {
-            return $this->renderView("Categories/add");
+        $categories = $this->categoryRepository->findAllCategories();
+
+        $this->renderView('Categories/index', [
+            'categories' => $categories
+        ], layout: 'main');
+    }
+
+    public function add(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $this->renderView('Categories/add', [], layout: 'main');
+            return;
         }
 
         $errors = [];
 
-        if (empty($_POST["name"])) {
-            $errors["name"] = "Le nom de la catégorie est obligatoire.";
+        $name = trim($_POST['name'] ?? '');
+
+        if ($name === '') {
+            $errors['name'] = 'Le nom de la catégorie est obligatoire.';
         }
 
         if (!empty($errors)) {
-            return $this->renderView("Categories/add", [
-                "errors" => $errors
-            ]);
+            $this->renderView('Categories/add', [
+                'errors' => $errors,
+                'old' => ['name' => $name]
+            ], layout: 'main');
+            return;
         }
 
-        $category = new Category(strip_tags($_POST["name"]));
+        $category = new Category(strip_tags($name));
+        $this->categoryRepository->insertCategory($category);
 
-        $categoryRepository = new CategoryRepository();
-        $categoryRepository->insertCategory($category);
-
-        return $this->redirect("/category/index");
+        $this->redirect('/category/index');
     }
 }

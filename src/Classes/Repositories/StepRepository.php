@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Classes\Repositories;
 
 use App\Classes\Core\AbstractRepository;
@@ -9,15 +10,15 @@ class StepRepository extends AbstractRepository
     public function __construct()
     {
         parent::__construct();
-        $this->table = 'step';
+        $this->table = 'step'; // ou 'steps' selon ta DB
     }
 
     public function insertStep(Step $step): int
     {
         $data = [
-            "order"     => $step->getOrder(),
-            "description" => $step->getDescription(),
-            "recipe_id" => $step->getRecipeId(),
+            'order'       => $step->getOrder(),
+            'description' => $step->getDescription(),
+            'recipe_id'   => $step->getRecipeId(),
         ];
 
         return $this->insert($data);
@@ -26,9 +27,9 @@ class StepRepository extends AbstractRepository
     public function updateStep(Step $step): bool
     {
         $data = [
-            "order"       => $step->getOrder(),
-            "description" => $step->getDescription(),
-            "recipe_id"   => $step->getRecipeId(),
+            'order'       => $step->getOrder(),
+            'description' => $step->getDescription(),
+            'recipe_id'   => $step->getRecipeId(),
         ];
 
         return $this->update($step->getId(), $data);
@@ -48,12 +49,12 @@ class StepRepository extends AbstractRepository
     public function findAllSteps(): array
     {
         $rows = parent::findAll();
-        return array_map(fn($row) => $this->hydrate(Step::class, $row), $rows);
+        return array_map(fn ($row) => $this->hydrate(Step::class, $row), $rows);
     }
 
     public function findByRecipe(int $recipeId): array
     {
-        $rows = $this->findBy(["recipe_id" => $recipeId]);
-        return array_map(fn($row) => $this->hydrate(Step::class, $row), $rows);
+        $rows = $this->findBy(['recipe_id' => $recipeId]);
+        return array_map(fn ($row) => $this->hydrate(Step::class, $row), $rows);
     }
 }

@@ -26,6 +26,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+ALTER TABLE users ADD remember_token VARCHAR(255) NULL;
+
+CREATE TABLE password_resets (
+    email VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL
+);
+
 INSERT INTO 
       `user`(`lastname`, `firstname`, `email`, `role`, `password`, `created_at`, `updated_at`)
 VALUES(

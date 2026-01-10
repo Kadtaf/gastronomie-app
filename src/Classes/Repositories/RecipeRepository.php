@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Classes\Repositories;
 
 use App\Classes\Core\AbstractRepository;
@@ -9,20 +10,20 @@ class RecipeRepository extends AbstractRepository
     public function __construct()
     {
         parent::__construct();
-        $this->table = 'recipe';
+        $this->table = 'recipe'; // ou 'recipes' selon ta DB
     }
 
     public function insertRecipe(Recipe $recipe): int
     {
         $data = [
-            "title"        => $recipe->getTitle(),
-            "description"  => $recipe->getDescription(),
-            "duration"     => $recipe->getDuration(),
-            "file_path_img"=> $recipe->getFilePathImg(),
-            "user_id"      => $recipe->getUserId(),
-            "category_id"  => $recipe->getCategoryId(),
-            "created_at"   => $recipe->getCreatedAt(),
-            "updated_at"   => $recipe->getUpdatedAt(),
+            'title'        => $recipe->getTitle(),
+            'description'  => $recipe->getDescription(),
+            'duration'     => $recipe->getDuration(),
+            'file_path_img'=> $recipe->getImagePath(),
+            'user_id'      => $recipe->getUserId(),
+            'category_id'  => $recipe->getCategoryId(),
+            'created_at'   => $recipe->getCreatedAt(),
+            'updated_at'   => $recipe->getUpdatedAt(),
         ];
 
         return $this->insert($data);
@@ -31,13 +32,13 @@ class RecipeRepository extends AbstractRepository
     public function updateRecipe(Recipe $recipe): bool
     {
         $data = [
-            "title"        => $recipe->getTitle(),
-            "description"  => $recipe->getDescription(),
-            "duration"     => $recipe->getDuration(),
-            "file_path_img"=> $recipe->getFilePathImg(),
-            "user_id"      => $recipe->getUserId(),
-            "category_id"  => $recipe->getCategoryId(),
-            "updated_at"   => $recipe->getUpdatedAt(),
+            'title'        => $recipe->getTitle(),
+            'description'  => $recipe->getDescription(),
+            'duration'     => $recipe->getDuration(),
+            'file_path_img'=> $recipe->getImagePath(),
+            'user_id'      => $recipe->getUserId(),
+            'category_id'  => $recipe->getCategoryId(),
+            'updated_at'   => $recipe->getUpdatedAt(),
         ];
 
         return $this->update($recipe->getId(), $data);
@@ -46,7 +47,7 @@ class RecipeRepository extends AbstractRepository
     public function updateCategory(Recipe $recipe): bool
     {
         return $this->update($recipe->getId(), [
-            "category_id" => $recipe->getCategoryId()
+            'category_id' => $recipe->getCategoryId()
         ]);
     }
 
@@ -64,6 +65,6 @@ class RecipeRepository extends AbstractRepository
     public function findAllRecipes(): array
     {
         $rows = parent::findAll();
-        return array_map(fn($row) => $this->hydrate(Recipe::class, $row), $rows);
+        return array_map(fn ($row) => $this->hydrate(Recipe::class, $row), $rows);
     }
 }

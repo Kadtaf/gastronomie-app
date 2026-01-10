@@ -1,12 +1,11 @@
 <?php
+
 namespace App\Classes\Entities;
 
-
-
-class Category 
+class Category
 {
     private ?int $id = null;
-    protected string $name;
+    private string $name;
 
     public function __construct(string $name)
     {
@@ -16,6 +15,12 @@ class Category
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getName(): string

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Classes\Repositories;
 
 use App\Classes\Core\AbstractRepository;
@@ -9,13 +10,13 @@ class CategoryRepository extends AbstractRepository
     public function __construct()
     {
         parent::__construct();
-        $this->table = 'category';
+        $this->table = 'category'; // ou 'categories' selon ta DB
     }
 
     public function insertCategory(Category $category): int
     {
         $data = [
-            "name" => $category->getName(),
+            'name' => $category->getName(),
         ];
 
         return $this->insert($data);
@@ -24,7 +25,7 @@ class CategoryRepository extends AbstractRepository
     public function updateCategory(Category $category): bool
     {
         $data = [
-            "name" => $category->getName(),
+            'name' => $category->getName(),
         ];
 
         return $this->update($category->getId(), $data);
@@ -44,15 +45,17 @@ class CategoryRepository extends AbstractRepository
     public function findAllCategories(): array
     {
         $rows = parent::findAll();
-        return array_map(fn($row) => $this->hydrate(Category::class, $row), $rows);
+        return array_map(fn ($row) => $this->hydrate(Category::class, $row), $rows);
     }
 
     public function findByName(string $name): ?Category
     {
-        $rows = $this->findBy(["name" => $name]);
+        $rows = $this->findBy(['name' => $name]);
+
         if (empty($rows)) {
             return null;
         }
+
         return $this->hydrate(Category::class, $rows[0]);
     }
 }
