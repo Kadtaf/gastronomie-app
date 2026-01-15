@@ -2,6 +2,7 @@
 
 namespace App\Classes\Controllers;
 
+use App\Classes\Core\Flash;
 use App\Classes\Repositories\CategoryRepository;
 use App\Classes\Entities\Category;
 
@@ -39,6 +40,7 @@ class CategoryController extends AbstractController
         }
 
         if (!empty($errors)) {
+            Flash::add('error', 'Veuillez corriger les erreurs du formulaire.');
             $this->renderView('Categories/add', [
                 'errors' => $errors,
                 'old' => ['name' => $name]

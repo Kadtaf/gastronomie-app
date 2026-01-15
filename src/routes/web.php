@@ -23,6 +23,17 @@ return [
     Route::get('/reset-password/{token}', 'AuthController@resetPassword'),
     Route::post('/reset-password/{token}', 'AuthController@resetPassword')->middleware('csrf'),
 
+    // Page forbidden (publique)
+    Route::get('/forbidden', 'ErrorController@forbidden'),
+
+    // Routes protégées
+    Route::get('/user/profile', 'UserController@profile')
+        ->middleware('auth'),
+
+    Route::get('/admin/dashboard', 'AdminController@dashboard')
+        ->middleware('auth')
+        ->middleware('admin'),      
+
     // Admin group
     [
         'prefix' => '/admin',
@@ -30,6 +41,17 @@ return [
         'routes' => [
             Route::get('/dashboard', 'AdminController@dashboard'),
             Route::post('/user/delete/{id}', 'AdminController@deleteUser')->middleware('csrf'),
+        ]
+    ],
+
+    //Recipe routes
+    [
+        'prefix' => '/recipe',
+        'routes' => [
+            Route::get('/index', 'RecipeController@index'),
+            Route::get('/show/{id}', 'RecipeController@show'),
+            Route::get('/add', 'RecipeController@add')->middleware('auth'),
+            Route::post('/add', 'RecipeController@add')->middleware('auth')->middleware('csrf'),
         ]
     ],
 

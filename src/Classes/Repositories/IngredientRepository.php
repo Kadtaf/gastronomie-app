@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Classes\Repositories;
 
 use App\Classes\Core\AbstractRepository;
@@ -10,53 +9,46 @@ class IngredientRepository extends AbstractRepository
     public function __construct()
     {
         parent::__construct();
-        $this->table = 'ingredient'; // ou 'ingredients' selon ta DB
+        $this->table = 'ingredient';
     }
 
     public function insertIngredient(Ingredient $ingredient): int
     {
         $data = [
-            'name'      => $ingredient->getName(),
-            'quantity'  => $ingredient->getQuantity(),
-            'unit'      => $ingredient->getUnit(),
-            'recipe_id' => $ingredient->getRecipeId(),
+            'name'     => $ingredient->getName(),
+            'quantity' => $ingredient->getQuantity(),
+            'unity'    => $ingredient->getUnity(),
         ];
 
         return $this->insert($data);
     }
 
-    public function updateIngredient(Ingredient $ingredient): bool
+    public function attachToRecipe(int $ingredientId, int $recipeId): void
     {
-        $data = [
-            'name'      => $ingredient->getName(),
-            'quantity'  => $ingredient->getQuantity(),
-            'unit'      => $ingredient->getUnit(),
-            'recipe_id' => $ingredient->getRecipeId(),
-        ];
+        $sql = "INSERT INTO ingredient_recipe (ingredient_id, recipe_id)
+                VALUES (:ingredient_id, :recipe_id)";
 
-        return $this->update($ingredient->getId(), $data);
-    }
-
-    public function deleteIngredient(int $id): bool
-    {
-        return $this->delete($id);
-    }
-
-    public function findIngredient(int $id): ?Ingredient
-    {
-        $data = parent::find($id);
-        return $data ? $this->hydrate(Ingredient::class, $data) : null;
-    }
-
-    public function findAllIngredients(): array
-    {
-        $rows = parent::findAll();
-        return array_map(fn ($row) => $this->hydrate(Ingredient::class, $row), $rows);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'ingredient_id' => $ingredientId,
+            'recipe_id'     => $recipeId,
+        ]);
     }
 
     public function findByRecipe(int $recipeId): array
     {
-        $rows = $this->findBy(['recipe_id' => $recipeId]);
-        return array_map(fn ($row) => $this->hydrate(Ingredient::class, $row), $rows);
+        $sql = "
+            SELECT i.*
+            FROM ingredient i
+            JOIN ingredient_recipe ir ON ir.ingredient_id = i.id
+            WHERE ir.recipe_id = :recipe_id
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['recipe_id' => $recipeId]);
+
+        $rows = $stmt->fetchAll();
+
+        return array_map(fn($row) => $this->hydrate(Ingredient::class, $row), $rows);
     }
 }

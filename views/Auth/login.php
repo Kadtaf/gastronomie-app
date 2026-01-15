@@ -2,7 +2,7 @@
 
 <form action="/login" method="POST">
     
-    <input type="hidden" name="_csrf_token" value="<?= htmlspecialchars($this->csrfToken()) ?>">
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars($this->csrfToken()) ?>">
 
 
     <label>Email :</label>

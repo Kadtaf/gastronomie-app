@@ -6,21 +6,15 @@ class Ingredient
 {
     private ?int $id = null;
 
-    private string $name;
-    private float $quantity;
-    private string $unit;
-    private int $recipeId;
+    private ?string $name = null;
+    private ?float $quantity = null;
+    private ?string $unity = null;
+    private ?int $recipeId = null;
 
-    public function __construct(
-        string $name,
-        float $quantity,
-        string $unit,
-        int $recipeId
-    ) {
-        $this->name = $name;
-        $this->quantity = $quantity;
-        $this->unit = $unit;
-        $this->recipeId = $recipeId;
+    public function __construct()
+        
+    {
+        // Constructeur vide - utiliser les setters
     }
 
     public function getId(): ?int
@@ -34,7 +28,7 @@ class Ingredient
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -45,7 +39,7 @@ class Ingredient
         return $this;
     }
 
-    public function getQuantity(): float
+    public function getQuantity(): ?float
     {
         return $this->quantity;
     }
@@ -56,18 +50,18 @@ class Ingredient
         return $this;
     }
 
-    public function getUnit(): string
+    public function getUnity(): ?string
     {
-        return $this->unit;
+        return $this->unity;
     }
 
-    public function setUnit(string $unit): self
+    public function setUnity(string $unity): self
     {
-        $this->unit = $unit;
+        $this->unity = $unity;
         return $this;
     }
 
-    public function getRecipeId(): int
+    public function getRecipeId(): ?int
     {
         return $this->recipeId;
     }

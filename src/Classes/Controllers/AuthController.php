@@ -2,6 +2,7 @@
 
 namespace App\Classes\Controllers;
 
+use App\Classes\Core\Flash;
 use App\Classes\Repositories\UserRepository;
 use App\Classes\Entities\User;
 use DateTimeImmutable;
@@ -12,7 +13,6 @@ class AuthController extends AbstractController
 
     public function __construct()
     {
-        session_start();
         $this->userRepository = new UserRepository();
         $this->autoLogin();
     }
@@ -56,6 +56,8 @@ class AuthController extends AbstractController
 
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
+        //var_dump($_POST);
+        //exit;
 
         $key = 'login_' . $email;
 
@@ -69,7 +71,10 @@ class AuthController extends AbstractController
 
         // 2. Vérifier identifiants
         $user = $this->userRepository->findByEmail($email);
-
+        //var_dump($user->getPassword());
+        //var_dump($_POST['password']);
+        //var_dump(password_verify($_POST['password'], $user->getPassword()));
+        //exit;
         if (!$user || !password_verify($password, $user->getPassword())) {
 
             \App\Classes\Core\RateLimiter::hit($key);
@@ -127,9 +132,10 @@ class AuthController extends AbstractController
             'firstname'             => 'required|string|max:50',
             'lastname'              => 'required|string|max:50',
             'email'                 => 'required|email',
-            'password'              => 'required|min:6',
-            'password_confirmation' => 'required|confirmed',
+            'password'              => 'required|min:6|confirmed',
+            'password_confirmation' => 'required'
         ]);
+        //var_dump($errors); exit;
 
         // Email déjà utilisé ?
         if (empty($errors['email']) && $this->userRepository->findByEmail($_POST['email'])) {
@@ -172,7 +178,7 @@ class AuthController extends AbstractController
         ];
 
         $this->flash('success', 'Inscription réussie ! Bienvenue.');
-        $this->redirect('/admin/dashboard');
+        $this->redirect('/');
     }
 
     public function logout(): void
@@ -210,6 +216,7 @@ class AuthController extends AbstractController
     }
 
     if (!empty($errors)) {
+        
         $this->renderView('Auth/forgot_password', [
             'errors' => $errors,
             'old' => $_POST

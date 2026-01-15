@@ -10,13 +10,13 @@
 
 <body class="admin-body">
 
-    <?php require dirname(__DIR__) . '/partials/admin_navbar.php'; ?>
+    <?= $this->includePartial('admin_navbar') ?>
 
     <main class="admin-container">
         <?php require $viewFile; ?>
     </main>
 
-    <?php require dirname(__DIR__) . '/partials/admin_footer.php'; ?>
+    <?= $this->includePartial('admin_footer') ?>
 
     <?php $this->yield('scripts'); ?>
 </body>

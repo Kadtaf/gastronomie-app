@@ -6,19 +6,16 @@ class Step
 {
     private ?int $id = null;
 
-    private int $order;
-    private string $description;
-    private int $recipeId;
+    private ?int $orderStep = null;
+    private ?string $description = null;
+    private ?int $recipeId = null;
 
-    public function __construct(
-        int $order,
-        string $description,
-        int $recipeId
-    ) {
-        $this->order = $order;
-        $this->description = $description;
-        $this->recipeId = $recipeId;
+    public function __construct()
+    {
+        // Constructeur vide - utiliser les setters
     }
+
+    
 
     public function getId(): ?int
     {
@@ -31,18 +28,18 @@ class Step
         return $this;
     }
 
-    public function getOrder(): int
+    public function getOrderStep(): ?int
     {
-        return $this->order;
+        return $this->orderStep;
     }
 
-    public function setOrder(int $order): self
+    public function setOrderStep(int $orderStep): self
     {
-        $this->order = $order;
+        $this->orderStep = $orderStep;
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -53,7 +50,7 @@ class Step
         return $this;
     }
 
-    public function getRecipeId(): int
+    public function getRecipeId(): ?int
     {
         return $this->recipeId;
     }

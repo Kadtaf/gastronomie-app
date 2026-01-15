@@ -15,7 +15,7 @@ class CsrfMiddleware extends BaseMiddleware
         }
 
         // Récupération du token CSRF envoyé par le formulaire
-        $token = $_POST['_csrf_token'] ?? null;
+        $token = $_POST['_csrf'] ?? null;
 
         // Vérification du token
         if (!$token || !Csrf::checkToken($token)) {

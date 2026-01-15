@@ -8,7 +8,7 @@ class Router
 
     public function __construct()
     {
-        $this->routes = require __DIR__ . '/../../../routes/web.php';
+        $this->routes = require dirname(__DIR__, 2) . '/routes/web.php';
     }
 
     public function run(): void

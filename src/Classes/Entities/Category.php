@@ -7,9 +7,9 @@ class Category
     private ?int $id = null;
     private string $name;
 
-    public function __construct(string $name)
+    public function __construct()
     {
-        $this->name = $name;
+        
     }
 
     public function getId(): ?int

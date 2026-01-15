@@ -71,38 +71,42 @@ class Validator
 
     private function validateMin(string $field, $value, $min): void
     {
-        if (strlen($value) < (int) $min) {
+        if ($value !== null && strlen($value) < (int) $min) {
             $this->addError($field, "Le champ $field doit contenir au moins $min caractères.");
         }
     }
 
     private function validateMax(string $field, $value, $max): void
     {
-        if (strlen($value) > (int) $max) {
+        if ($value !== null && strlen($value) > (int) $max) {
             $this->addError($field, "Le champ $field ne peut pas dépasser $max caractères.");
         }
     }
-
     private function validateNumeric(string $field, $value): void
     {
-        if (!is_numeric($value)) {
+        if ($value !== null && !is_numeric($value)) {
             $this->addError($field, "Le champ $field doit être un nombre.");
         }
     }
 
     private function validateString(string $field, $value): void
     {
-        if (!is_string($value)) {
+        if ($value !== null && !is_string($value)) {
             $this->addError($field, "Le champ $field doit être une chaîne de caractères.");
         }
     }
 
-    private function validateConfirmed(string $field, $value): void
+   private function validateConfirmed(string $field, $value): void
     {
-        $confirmation = $this->data[$field . '_confirmation'] ?? null;
+        $confirmationField = $field . '_confirmation';
+        $confirmation = $this->data[$confirmationField] ?? null;
+
+        if ($value === null || $value === '') {
+            return; // Le champ required gérera l'erreur
+        }
 
         if ($value !== $confirmation) {
-            $this->addError($field, "Le champ $field doit être confirmé.");
+            $this->addError($field, "Le champ $field et sa confirmation ne correspondent pas.");
         }
     }
 }

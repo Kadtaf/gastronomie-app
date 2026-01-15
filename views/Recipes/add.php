@@ -1,8 +1,8 @@
 <h1>Ajouter une recette</h1>
 
-<form action="/recipe/add" method="POST" enctype="multipart/form-data">
+<form class="recipe-form" action="/recipe/add" method="POST" enctype="multipart/form-data">
 
-    <input type="hidden" name="_csrf_token" value="<?= htmlspecialchars($this->csrfToken()) ?>">
+    <input type="hidden" name="_csrf" value="<?= htmlspecialchars($this->csrfToken()) ?>">
 
     <label for="title">Titre :</label>
     <input type="text" name="title" id="title" value="<?= htmlspecialchars($old['title'] ?? '') ?>">
@@ -38,11 +38,13 @@
     <?php endif; ?>
 
     <h2>Ingrédients</h2>
+
     <div id="ingredients">
         <div class="ingredient">
             <input type="text" name="name_ingredient[]" placeholder="Nom">
             <input type="number" name="quantity_ingredient[]" placeholder="Quantité">
             <input type="text" name="unity_ingredient[]" placeholder="Unité">
+            <button type="button" class="remove-btn" onclick="removeField(this)">Supprimer</button>
         </div>
     </div>
 
@@ -53,33 +55,20 @@
         <div class="step">
             <input type="number" name="order_step[]" placeholder="Ordre">
             <input type="text" name="description_step[]" placeholder="Description">
+            <button type="button" class="remove-btn" onclick="removeField(this)">Supprimer</button>
         </div>
     </div>
 
     <button type="button" onclick="addStep()">Ajouter une étape</button>
 
+    <label for="difficulty">Difficulté</label>
+    <select name="difficulty" id="difficulty">
+        <option value="facile">Facile</option>
+        <option value="moyenne">Moyenne</option>
+        <option value="difficile">Difficile</option>
+    </select>
+
     <button type="submit">Créer la recette</button>
 </form>
 
-<script>
-function addIngredient() {
-    const div = document.createElement('div');
-    div.classList.add('ingredient');
-    div.innerHTML = `
-        <input type="text" name="name_ingredient[]" placeholder="Nom">
-        <input type="number" name="quantity_ingredient[]" placeholder="Quantité">
-        <input type="text" name="unity_ingredient[]" placeholder="Unité">
-    `;
-    document.getElementById('ingredients').appendChild(div);
-}
-
-function addStep() {
-    const div = document.createElement('div');
-    div.classList.add('step');
-    div.innerHTML = `
-        <input type="number" name="order_step[]" placeholder="Ordre">
-        <input type="text" name="description_step[]" placeholder="Description">
-    `;
-    document.getElementById('steps').appendChild(div);
-}
-</script>
+<script src="/js/recipe-form.js"></script>

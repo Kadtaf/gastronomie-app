@@ -10,29 +10,31 @@ class StepRepository extends AbstractRepository
     public function __construct()
     {
         parent::__construct();
-        $this->table = 'step'; // ou 'steps' selon ta DB
+        $this->table = 'step'; 
     }
 
     public function insertStep(Step $step): int
     {
-        $data = [
-            'order'       => $step->getOrder(),
-            'description' => $step->getDescription(),
-            'recipe_id'   => $step->getRecipeId(),
-        ];
+    $data = [
+        'recipe_id'   => $step->getRecipeId(),
+        'order_step' => $step->getOrderStep(),
+        'description' => $step->getDescription(),
+        
+    ];
 
-        return $this->insert($data);
+    return $this->insert($data);
     }
 
     public function updateStep(Step $step): bool
     {
-        $data = [
-            'order'       => $step->getOrder(),
-            'description' => $step->getDescription(),
-            'recipe_id'   => $step->getRecipeId(),
-        ];
+    $data = [
+        'recipe_id'   => $step->getRecipeId(),
+        'order_step' => $step->getOrderStep(),
+        'description' => $step->getDescription(),
+        
+    ];
 
-        return $this->update($step->getId(), $data);
+    return $this->update($step->getId(), $data);
     }
 
     public function deleteStep(int $id): bool
@@ -54,7 +56,12 @@ class StepRepository extends AbstractRepository
 
     public function findByRecipe(int $recipeId): array
     {
-        $rows = $this->findBy(['recipe_id' => $recipeId]);
-        return array_map(fn ($row) => $this->hydrate(Step::class, $row), $rows);
+        $sql = "SELECT * FROM {$this->table} WHERE recipe_id = :recipe_id ORDER BY order_step ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':recipe_id' => $recipeId]);
+        
+        $steps = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return array_map(fn($row) => $this->hydrate(Step::class, $row), $steps);
     }
 }

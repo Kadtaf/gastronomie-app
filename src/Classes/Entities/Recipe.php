@@ -6,36 +6,20 @@ class Recipe
 {
     private ?int $id = null;
 
-    private string $title;
-    private string $description;
-    private int $duration; // minutes
-    private ?string $imagePath;
+    private ?string $title = null;
+    private ?string $description = null;
+    private ?int $duration = null;
+    private ?string $filePathImg = null;
+    private ?int $userId = null;
+    private ?int $categoryId = null;
+    private ?string $createdAt = null;
+    private ?string $updatedAt = null;
+    private ?string $difficulty = null;
 
-    private int $userId;
-    private ?int $categoryId;
 
-    private string $createdAt;
-    private string $updatedAt;
+    
 
-    public function __construct(
-        string $title,
-        string $description,
-        int $duration,
-        ?string $imagePath,
-        int $userId,
-        ?int $categoryId,
-        string $createdAt,
-        string $updatedAt
-    ) {
-        $this->title = $title;
-        $this->description = $description;
-        $this->duration = $duration;
-        $this->imagePath = $imagePath;
-        $this->userId = $userId;
-        $this->categoryId = $categoryId;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-    }
+    public function __construct() {}
 
     public function getId(): ?int
     {
@@ -48,7 +32,7 @@ class Recipe
         return $this;
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -59,7 +43,7 @@ class Recipe
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -70,7 +54,7 @@ class Recipe
         return $this;
     }
 
-    public function getDuration(): int
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
@@ -81,18 +65,19 @@ class Recipe
         return $this;
     }
 
-    public function getImagePath(): ?string
+    public function getFilePathImg(): ?string
     {
-        return $this->imagePath;
+        return $this->filePathImg;
     }
 
-    public function setImagePath(?string $imagePath): self
+    public function setFilePathImg(string $path): self
     {
-        $this->imagePath = $imagePath;
+        $this->filePathImg = $path;
         return $this;
     }
 
-    public function getUserId(): int
+
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
@@ -114,7 +99,7 @@ class Recipe
         return $this;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
@@ -125,7 +110,7 @@ class Recipe
         return $this;
     }
 
-    public function getUpdatedAt(): string
+    public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
     }
@@ -135,4 +120,30 @@ class Recipe
         $this->updatedAt = $updatedAt;
         return $this;
     }
+
+    public function getDifficulty(): ?string
+    {
+        return $this->difficulty;
+    }
+
+    public function setDifficulty(string $difficulty): self
+    {
+        $this->difficulty = $difficulty;
+        return $this;
+    }
+
+    public function getDurationFormatted(): string
+    {
+        $minutes = $this->duration;
+
+        $hours = intdiv($minutes, 60);
+        $mins = $minutes % 60;
+
+        if ($hours > 0) {
+            return $hours . 'h ' . ($mins > 0 ? $mins . ' min' : '');
+        }
+
+        return $mins . ' min';
+    }
+
 }

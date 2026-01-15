@@ -3,7 +3,7 @@ Dashboard Admin
 <?php $this->endSection(); ?>
 
 <?php $this->startSection('styles'); ?>
-<link rel="stylesheet" href="/css/admin_dashboard.css">
+<link rel="stylesheet" href="<?= $this->asset('/css/admin_dashboard.css') ?>">
 <?php $this->endSection(); ?>
 
 <h1 class="admin-title">Tableau de bord</h1>
@@ -30,5 +30,5 @@ Dashboard Admin
 </div>
 
 <?php $this->startSection('scripts'); ?>
-<script src="/js/admin_dashboard.js"></script>
+<script src="<?= $this->asset('/js/admin_dashboard.js') ?>"></script>
 <?php $this->endSection(); ?>

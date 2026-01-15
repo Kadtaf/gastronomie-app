@@ -5,6 +5,7 @@ use App\Classes\Controllers\AbstractController;
 use App\Classes\Repositories\CommentRepository;
 use App\Classes\Entities\Comment;
 use DateTimeImmutable;
+use App\Classes\Core\Flash;
 
 class CommentController extends AbstractController
 {
@@ -23,6 +24,8 @@ class CommentController extends AbstractController
         }
 
         if (!empty($errors)) {
+            Flash::add('error', 'Veuillez corriger les erreurs du formulaire.');
+
             return $this->renderView("Comments/add", [
                 "errors" => $errors,
                 "recipeId" => $recipeId
@@ -42,6 +45,8 @@ class CommentController extends AbstractController
         $commentRepository = new CommentRepository();
         $commentRepository->insertComment($comment);
 
+        Flash::add('success', 'Commentaire ajouté avec succès.');
+
         return $this->redirect("/recipe/show/$recipeId");
     }
 
@@ -50,6 +55,7 @@ class CommentController extends AbstractController
         $commentRepository = new CommentRepository();
         $commentRepository->deleteComment($id);
 
+        Flash::add('success', 'Commentaire supprimé avec succès.');
         return $this->redirect("/recipe/index");
     }
 }

@@ -1,39 +1,61 @@
+<?php $this->startSection('title'); ?>
+Inscription
+<?php $this->endSection(); ?>
+
+<?php if (!empty($errors['login'])): ?>
+    <?php $this->component('alert', [
+        'type' => 'error',
+        'message' => $errors['login']
+    ]); ?>
+<?php endif; ?>
+
 <h1>Inscription</h1>
 
 <form action="/register" method="POST">
-    <input type="hidden" name="_csrf_token" value="<?= htmlspecialchars($this->csrfToken()) ?>">
 
-    <label>Prénom :</label>
-    <input type="text" name="firstname" value="<?= htmlspecialchars($old['firstname'] ?? '') ?>">
-    <?php if (!empty($errors['firstname'])): ?>
-        <p class="error"><?= $errors['firstname'] ?></p>
-    <?php endif; ?>
+    <?= $this->csrfField() ?>
 
-    <label>Nom :</label>
-    <input type="text" name="lastname" value="<?= htmlspecialchars($old['lastname'] ?? '') ?>">
-    <?php if (!empty($errors['lastname'])): ?>
-        <p class="error"><?= $errors['lastname'] ?></p>
-    <?php endif; ?>
+    <?php $this->component('input', [
+        'label' => 'Prénom',
+        'name'  => 'firstname',
+        'value' => $this->old('firstname'),
+        'error' => $errors['firstname'] ?? null
+    ]); ?>
 
-    <label>Email :</label>
-    <input type="email" name="email" value="<?= htmlspecialchars($old['email'] ?? '') ?>">
-    <?php if (!empty($errors['email'])): ?>
-        <p class="error"><?= $errors['email'] ?></p>
-    <?php endif; ?>
+    <?php $this->component('input', [
+        'label' => 'Nom',
+        'name'  => 'lastname',
+        'value' => $this->old('lastname'),
+        'error' => $errors['lastname'] ?? null
+    ]); ?>
 
-    <label>Mot de passe :</label>
-    <input type="password" name="password">
-    <?php if (!empty($errors['password'])): ?>
-        <p class="error"><?= $errors['password'] ?></p>
-    <?php endif; ?>
+    <?php $this->component('input', [
+        'label' => 'Email',
+        'name'  => 'email',
+        'type'  => 'email',
+        'value' => $this->old('email'),
+        'error' => $errors['email'] ?? null
+    ]); ?>
 
-    <label>Confirmer le mot de passe :</label>
-    <input type="password" name="password_confirmation">
-    <?php if (!empty($errors['password_confirmation'])): ?>
-        <p class="error"><?= $errors['password_confirmation'] ?></p>
-    <?php endif; ?>
+    <?php $this->component('input', [
+        'label' => 'Mot de passe',
+        'name'  => 'password',
+        'type'  => 'password',
+        'error' => $errors['password'] ?? null
+    ]); ?>
 
-    <button type="submit">Créer un compte</button>
+    <?php $this->component('input', [
+        'label' => 'Confirmer le mot de passe',
+        'name'  => 'password_confirmation',
+        'type'  => 'password',
+        'error' => $errors['password_confirmation'] ?? null
+    ]); ?>
+
+    <?php $this->component('button', [
+        'variant' => 'primary',
+        'label'   => 'Créer un compte'
+    ]); ?>
+
 </form>
 
 <p>Déjà un compte ? <a href="/login">Se connecter</a></p>

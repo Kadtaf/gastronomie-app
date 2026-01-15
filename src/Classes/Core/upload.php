@@ -14,7 +14,7 @@ class Upload
             return null;
         }
 
-        $uploadDir = dirname(__DIR__, 3) . "/public/uploads/";
+        $uploadDir = dirname(__DIR__, 2) . "/public/uploads/";
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
@@ -24,7 +24,7 @@ class Upload
         $destination = $uploadDir . $filename;
 
         if (move_uploaded_file($file["tmp_name"], $destination)) {
-            return "uploads/" . $filename;
+            return "/uploads/" . $filename;
         }
 
         return null;

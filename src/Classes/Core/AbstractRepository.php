@@ -95,13 +95,13 @@ abstract class AbstractRepository
 
     public function hydrate(string $class, array $data)
     {
-        // On crée l'objet SANS arguments (compatible avec tes entités)
         $object = new $class();
 
         foreach ($data as $key => $value) {
             // Convertit snake_case → camelCase
-            // created_at → setCreatedAt
-            $setter = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
+            // recipe_id → recipeId → setRecipeId
+            $camelCase = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
+            $setter = 'set' . ucfirst($camelCase);
 
             if (method_exists($object, $setter)) {
                 $object->$setter($value);
@@ -109,5 +109,31 @@ abstract class AbstractRepository
         }
 
         return $object;
+    }
+
+    public function paginate(int $page= 1, int $perPage =10): array
+    {
+        $offset = ($page - 1) * $perPage;
+
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM {$this->table}");
+        $stmt->execute();
+        $total = (int) $stmt->fetchColumn();
+
+        $stmt = $this->db->prepare("
+            SELECT * FROM {$this->table}
+            LIMIT :limit OFFSET :offset
+        ");
+        $stmt->bindValue(':limit', $perPage, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return [
+            'data'       => $stmt->fetchAll(\PDO::FETCH_ASSOC),
+            'total'      => $total,
+            'perPage'    => $perPage,
+            'current'    => $page,
+            'lastPage'   => (int) ceil($total / $perPage),
+        ];
+
     }
 }

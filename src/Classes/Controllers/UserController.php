@@ -5,6 +5,7 @@ namespace App\Classes\Controllers;
 use App\Classes\Repositories\UserRepository;
 use App\Classes\Entities\User;
 use DateTimeImmutable;
+use App\Classes\Core\Flash;
 
 class UserController extends AbstractController
 {
@@ -17,10 +18,13 @@ class UserController extends AbstractController
 
     public function index(): void
     {
-        $users = $this->userRepository->findAllUsers();
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+
+        $pagination = $this->userRepository->paginate($page, 10);
 
         $this->renderView('Users/index', [
-            'users' => $users
+            'users'      => $pagination['data'],
+            'pagination' => $pagination
         ], layout: 'main');
     }
 
@@ -35,6 +39,8 @@ class UserController extends AbstractController
         $errors = $this->validateUserForm($_POST);
 
         if (!empty($errors)) {
+            Flash::add('error', 'Veuillez corriger les erreurs du formulaire.');
+
             $this->renderView('Users/add', [
                 'errors' => $errors,
                 'old' => $_POST
@@ -56,6 +62,7 @@ class UserController extends AbstractController
         );
 
         $this->userRepository->insertUser($user);
+        Flash::add('success', 'Utilisateur créé avec succès.');
 
         $this->redirect('/user/index');
     }

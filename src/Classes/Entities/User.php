@@ -15,23 +15,28 @@ class User
     private string $createdAt;
     private string $updatedAt;
 
+
+
     public function __construct(
-        string $lastName,
-        string $firstName,
-        string $email,
-        string $password,
-        string $role,
-        string $createdAt,
-        string $updatedAt
+        ?string $lastName = null,
+        ?string $firstName = null,
+        ?string $email = null,
+        ?string $password = null,
+        ?string $role = 'user',
+        ?string $createdAt = null,
+        ?string $updatedAt = null,
+        ?int $id = null
     ) {
-        $this->lastName = $lastName;
-        $this->firstName = $firstName;
-        $this->email = $email;
-        $this->password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-        $this->role = $role;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
+        $this->id = $id;
+        $this->lastName = $lastName ?? '';
+        $this->firstName = $firstName ?? '';
+        $this->email = $email ?? '';
+        $this->password = $password ?? '';
+        $this->role = $role ?? 'user';
+        $this->createdAt = $createdAt ?? '';
+        $this->updatedAt = $updatedAt ?? '';
     }
+
 
     public function getId(): ?int
     {
@@ -44,23 +49,23 @@ class User
         return $this;
     }
 
-    public function getLastName(): string
+    public function getlastName(): string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): self
+    public function setlastName(string $lastName): self
     {
         $this->lastName = $lastName;
         return $this;
     }
 
-    public function getFirstName(): string
+    public function getfirstName(): string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): self
+    public function setfirstName(string $firstName): self
     {
         $this->firstName = $firstName;
         return $this;
@@ -82,9 +87,9 @@ class User
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+   public function setPassword(string $password): self
     {
-        $this->password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+        $this->password = $password; // NE PAS HASHER ICI
         return $this;
     }
 
@@ -119,5 +124,10 @@ class User
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->firstName . ' ' . $this->lastName;
     }
 }

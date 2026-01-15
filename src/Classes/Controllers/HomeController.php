@@ -9,7 +9,8 @@ class HomeController extends AbstractController
         $user = $_SESSION['user'] ?? null;
 
         $this->renderView('Home/index', [
-            'title' => 'Bienvenue sur mon site'
+            'title' => 'Bienvenue sur mon site',
+            'user' => $user
         ], layout: 'main');
     }
 }
