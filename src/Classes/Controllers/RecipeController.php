@@ -12,6 +12,7 @@ use App\Classes\Entities\Ingredient;
 use App\Classes\Core\Upload;
 use DateTimeImmutable;
 use App\Classes\Core\Flash;
+use App\Classes\Core\Csrf;
 
 class RecipeController extends AbstractController
 {
@@ -75,7 +76,7 @@ class RecipeController extends AbstractController
         }
 
         // Validation
-        $errors = $this->validateRecipeForm($_POST, $_FILES);
+        $errors = $this->validateRecipeFormForCreate($_POST, $_FILES);
 
         if (!empty($errors)) {
             Flash::add('error', 'Veuillez corriger les erreurs du formulaire.');
@@ -136,7 +137,7 @@ class RecipeController extends AbstractController
         $this->redirect('/recipe/index');
     }
 
-    private function validateRecipeForm(array $post, array $files): array
+    private function validateRecipeFormForCreate(array $post, array $files): array
     {
         $errors = [];
 
@@ -246,5 +247,208 @@ class RecipeController extends AbstractController
             'ingredients' => $ingredients,
             'steps' => $steps
         ], layout: 'main');
+    }
+
+    public function edit(int $id): void
+    {
+        // Récupération de la recette
+        $recipe = $this->recipeRepository->findRecipe($id);
+
+        if (!$recipe) {
+            Flash::add('error', 'Recette introuvable.');
+            $this->redirect('/recipe/index');
+            return;
+        }
+
+        // Récuppération des ingrédients et étapes associés
+        $ingredients = $this->ingredientRepository->findByRecipe($id);
+        $steps = $this->stepRepository->findByRecipe($id);
+
+        // Récupération des catégories
+        $categories = $this->categoryRepository->findAllCategories();
+
+        // Affichage du formulaire
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $this->renderView('Recipes/edit', [
+                'recipe' => $recipe,
+                'categories' => $categories,
+                'ingredients' => $ingredients,
+                'steps' => $steps,
+            ], layout: 'main');
+            return;
+        }
+
+        // Vérification CSRF
+        if (!Csrf::checkToken($_POST['csrf_token'] ?? null)) {
+            http_response_code(403);
+            die("Requête invalide (CSRF).");
+        }
+        
+
+        // Validation
+        $errors = $this->validateRecipeFormForEdit($_POST, $_FILES);
+
+        if (!empty($errors)) {
+            Flash::add('error', 'Veuillez corriger les erreurs.');
+            $this->renderView('Recipes/edit', [
+                'errors' => $errors,
+                'recipe' => $recipe,
+                'categories' => $categories,
+                'ingredients' => $ingredients,
+                'steps' => $steps,
+            ], layout: 'main');
+            return;
+        }
+
+        // Gestion de l’image
+        $imagePath = $recipe->getFilePathImg();
+
+        if (!empty($_FILES['img']['name'])) {
+            $imagePath = Upload::moveFile($_FILES['img']);
+        }
+
+        // Mise à jour de la recette
+        $recipe->setTitle(strip_tags($_POST['title']))
+            ->setDescription(strip_tags($_POST['description']))
+            ->setDuration((int) $_POST['duration'])
+            ->setFilePathImg($imagePath)
+            ->setCategoryId((int) $_POST['categories'])
+            ->setDifficulty($_POST['difficulty'])
+            ->setUpdatedAt((new DateTimeImmutable())->format('Y-m-d H:i:s'));
+
+        $this->recipeRepository->updateRecipe($recipe);
+
+        // Suppression des anciennes étapes et ingrédients liés
+        $this->stepRepository->deleteByRecipe($id);
+        $this->ingredientRepository->detachFromRecipe($id);
+
+        // Réinsertion des ingrédients
+        foreach ($this->extractElements($_POST, 'ingredient') as $ing) {
+        $ingredient = new Ingredient();
+        $ingredient->setName(strip_tags($ing['name_ingredient']))
+                ->setQuantity((float) $ing['quantity_ingredient'])
+                ->setUnity(strip_tags($ing['unity_ingredient']));
+
+        $ingredientId = $this->ingredientRepository->insertIngredient($ingredient);
+        $this->ingredientRepository->attachToRecipe($ingredientId, $id);
+        }
+
+        // Réinsertion des étapes
+        foreach ($this->extractElements($_POST, 'step') as $stp) {
+        $step = new Step();
+        $step->setOrderStep((int) $stp['order_step'])
+            ->setDescription(strip_tags($stp['description_step']))
+            ->setRecipeId($id);
+
+        $this->stepRepository->insertStep($step);
+        }
+
+
+        Flash::add('success', 'Recette modifiée avec succès.');
+        $this->redirect('/recipe/index');
+    }
+
+    public function delete(int $id): void
+    {
+        $recipe = $this->recipeRepository->findRecipe($id);
+
+        if (!$recipe) {
+            Flash::add('error', 'Recette introuvable.');
+            $this->redirect('/recipe/index');
+            return;
+        }
+
+        // Récupération du chemin de l’image
+        $imagePath = $recipe->getFilePathImg();
+
+        // Suppression de l'image si ce n'est pas l'image par défaut
+        if ($imagePath && $imagePath !== '/img/default.jpg') {
+
+            $fullPath = dirname(__DIR__, 2) . '/public' . $imagePath;
+
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+        }
+
+        // Suppression des étapes et ingrédients liés
+        $this->stepRepository->deleteByRecipe($id);
+        $this->ingredientRepository->detachFromRecipe($id);
+
+        // Suppression de la recette
+        $this->recipeRepository->deleteRecipe($id);
+
+        Flash::add('success', 'Recette supprimée avec succès.');
+        $this->redirect('/recipe/index');
+    }
+
+    private function validateRecipeFormForEdit(array $post, array $files): array
+    {
+        $errors = [];
+
+        // Champs simples
+        if (empty(trim($post['title'] ?? ''))) {
+            $errors['title'] = "Le titre est obligatoire.";
+        }
+
+        if (empty(trim($post['description'] ?? ''))) {
+            $errors['description'] = "La description est obligatoire.";
+        }
+
+        if (empty($post['duration']) || !ctype_digit($post['duration'])) {
+            $errors['duration'] = "La durée doit être un nombre entier.";
+        }
+
+        if (empty($post['difficulty']) || !in_array($post['difficulty'], ['facile', 'moyenne', 'difficile'])) {
+            $errors['difficulty'] = "Difficulté invalide.";
+        }
+
+        // Ingrédients (optionnels mais validés si présents)
+        if (!empty($post['name_ingredient'])) {
+            foreach ($post['name_ingredient'] as $i => $name) {
+
+                if (empty($name)) {
+                    $errors["ingredient_$i"] = "Le nom de l’ingrédient #".($i+1)." est obligatoire.";
+                }
+
+                if (empty($post['quantity_ingredient'][$i]) || !is_numeric($post['quantity_ingredient'][$i])) {
+                    $errors["quantity_$i"] = "La quantité de l’ingrédient #".($i+1)." doit être un nombre.";
+                }
+
+                if (empty($post['unity_ingredient'][$i])) {
+                    $errors["unity_$i"] = "L’unité de l’ingrédient #".($i+1)." est obligatoire.";
+                }
+            }
+        }
+
+        // Étapes (optionnelles mais validées si présentes)
+        if (!empty($post['order_step'])) {
+            foreach ($post['order_step'] as $i => $order) {
+
+                if (empty($order) || !ctype_digit($order)) {
+                    $errors["order_step_$i"] = "L’ordre de l’étape #".($i+1)." doit être un nombre.";
+                }
+
+                if (empty($post['description_step'][$i])) {
+                    $errors["description_step_$i"] = "La description de l’étape #".($i+1)." est obligatoire.";
+                }
+            }
+        }
+
+        // Image (OPTIONNELLE en édition)
+        if (!empty($files['img']['name'])) {
+
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+            if (!in_array($files['img']['type'], $allowedTypes)) {
+                $errors['img'] = "L'image doit être au format JPG, PNG ou WEBP.";
+            }
+
+            if ($files['img']['size'] > 3 * 1024 * 1024) {
+                $errors['img'] = "L'image ne doit pas dépasser 3 Mo.";
+            }
+        }
+
+        return $errors;
     }
 }

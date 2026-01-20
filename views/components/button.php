@@ -1,3 +1,3 @@
-<button class="btn btn-<?= htmlspecialchars($variant ?? 'primary') ?>">
-    <?= htmlspecialchars($label ?? 'Bouton') ?>
-</button>
+<a href="<?= htmlspecialchars($url) ?>" class="btn btn-<?= htmlspecialchars($variant) ?>">
+    <?= htmlspecialchars($label) ?>
+</a>

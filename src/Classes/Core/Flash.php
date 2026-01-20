@@ -18,10 +18,17 @@ class Flash
         ];
     }
 
-    public static function get(): array
+    // Vérifie s'il y a au moins un message
+    public static function has(): bool
+    {
+        return !empty($_SESSION[self::SESSION_KEY]);
+    }
+
+    // Récupère tous les messages et les supprime
+    public static function getAll(): array
     {
         $messages = $_SESSION[self::SESSION_KEY] ?? [];
-        unset($_SESSION[self::SESSION_KEY]); // auto-clear
+        unset($_SESSION[self::SESSION_KEY]);
         return $messages;
     }
 }

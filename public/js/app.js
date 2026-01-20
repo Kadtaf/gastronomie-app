@@ -19,3 +19,26 @@ if (toggleBtn) {
         toggleBtn.textContent = next === 'dark' ? '☀️' : '🌙';
     });
 }
+
+document.querySelectorAll('.dropdown-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+    });
+});
+
+// Menu burger
+const hamburger = document.getElementById('hamburger-btn');
+const navMenu = document.getElementById('nav-menu');
+
+if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('open');
+    });
+}
+// Dropdown Catégories (mobile)
+document.querySelectorAll('.dropdown-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        e.preventDefault();
+        btn.classList.toggle('active');
+    });
+});

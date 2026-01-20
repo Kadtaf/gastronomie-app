@@ -36,10 +36,14 @@ Accueil - Mon site MVC
 ]); ?>
 
 <!-- Utilisation de x-button -->
-<?php $this->component('button', [
-    'variant' => 'primary',
-    'label'   => 'Voir les recettes'
-]); ?>
+<div class="button-container">
+    <?php $this->component('button', [
+        'variant' => 'primary',
+        'label'   => 'Voir les recettes',
+        'url'     => '/recipe/index'
+        
+    ]); ?>
+</div>
 
 <?php if ($user): ?>
     <p>Bonjour <?= htmlspecialchars($user['firstname']) ?> !</p>

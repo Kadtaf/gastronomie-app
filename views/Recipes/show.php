@@ -26,6 +26,12 @@
             <li><?= htmlspecialchars($step->getDescription()) ?></li>
         <?php endforeach; ?>
     </ol>
-
-    <a href="/recipe/index">Retour</a>
+    <div class="card-actions">
+            <a href="/recipe/edit/<?= $recipe->getId() ?>" class="btn btn-warning">Modifier</a>
+            <a href="/recipe/delete/<?= $recipe->getId() ?>" class="btn btn-danger"
+            onclick="return confirm('Voulez-vous vraiment supprimer cette recette ?')">
+            Supprimer
+            </a>
+        </div>
+    <a href="/recipe/index" class="btn btn-primary">Retour</a>
 </div>

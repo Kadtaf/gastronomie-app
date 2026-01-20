@@ -1,7 +1,7 @@
 <?php
 use App\Classes\Core\Flash;
 
-$messages = Flash::get();
+$messages = Flash::getAll();
 
 if (!empty($messages)):
 ?>

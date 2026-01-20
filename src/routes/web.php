@@ -52,6 +52,9 @@ return [
             Route::get('/show/{id}', 'RecipeController@show'),
             Route::get('/add', 'RecipeController@add')->middleware('auth'),
             Route::post('/add', 'RecipeController@add')->middleware('auth')->middleware('csrf'),
+            Route::get('/edit/{id}', 'RecipeController@edit')->middleware('auth'),
+            Route::post('/edit/{id}', 'RecipeController@edit')->middleware('auth')->middleware('csrf'),
+            Route::get('/delete/{id}', 'RecipeController@delete')->middleware('auth'),
         ]
     ],
 

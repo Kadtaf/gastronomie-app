@@ -64,4 +64,11 @@ class StepRepository extends AbstractRepository
         
         return array_map(fn($row) => $this->hydrate(Step::class, $row), $steps);
     }
+
+    public function deleteByRecipe(int $recipeId): bool
+    {
+        $sql = "DELETE FROM {$this->table} WHERE recipe_id = :recipe_id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':recipe_id' => $recipeId]);
+    }
 }

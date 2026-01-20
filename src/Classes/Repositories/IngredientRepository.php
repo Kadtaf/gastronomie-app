@@ -51,4 +51,11 @@ class IngredientRepository extends AbstractRepository
 
         return array_map(fn($row) => $this->hydrate(Ingredient::class, $row), $rows);
     }
+
+    public function detachFromRecipe(int $recipeId): bool
+    {
+        $sql = "DELETE FROM ingredient_recipe WHERE recipe_id = :recipe_id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':recipe_id' => $recipeId]);
+    }
 }

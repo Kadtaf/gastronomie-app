@@ -1,94 +1,122 @@
-/* Conteneur global du formulaire */
-.recipe-form{
+/* ============================
+    FORMULAIRE GLOBAL
+   ============================ */
+
+.recipe-form {
     max-width: 800px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
 
 /* Labels */
 .recipe-form label {
     font-weight: 600;
     margin-top: 10px;
+    color: var(--text-color);
 }
 
-/* Inputs et textarea */
-.recipe-form input[type="text"],
-.recipe-form input[type="number"],
-.recipe-form input[type="file"],
-.recipe-form textarea,
-.recipe-form select {
-    width: 100%;
+/* ============================
+    GROUPES INGREDIENTS & ÉTAPES
+   ============================ */
+
+#ingredients,
+#steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ingredient,
+.step {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 90px;
+    gap: 12px;
+    align-items: center;
+    background: var(--card-bg);
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 15px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
 }
 
-/* Boutons d'ajout */
-.recipe-form button[type="button"] {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
+
+
+/* ============================
+    BOUTONS D'AJOUT / SUPPRESSION
+   ============================ */
+
+.recipe-form .add-btn {
     width: fit-content;
-}
-
-.recipe-form button[type="button"]:hover {
-    background: #2980b9;
 }
 
 /* Bouton supprimer */
 .remove-btn {
-    background: #c0392b;
+    background: var(--danger);
     color: white;
     border: none;
-    padding: 6px 10px;
-    border-radius: 5px;
+    padding: 10px 10px;
+    border-radius: var(--radius);
     cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s ease;
+    width: 100%;
+    text-align: center; 
+   
+    white-space: nowrap;
 }
 
 .remove-btn:hover {
-    background: #e74c3c;
+    background: var(--danger-dark);
 }
 
-/* Groupes ingrédients et étapes */
-#ingredients, #steps {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+/* ============================
+    BOUTON SUBMIT
+   ============================ */
 
-.ingredient, .step {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-}
-
-
-/* Bouton submit */
 .recipe-form button[type="submit"] {
-    background: #2ecc71;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
+   /* margin-top: 20px;*/
+    align-self: flex-end;
 }
 
-.recipe-form button[type="submit"]:hover {
-    background: #27ae60;
+.spacer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
-/* Messages d'erreur */
-.error {
-    color: #c0392b;
+/* ============================
+    MESSAGES D'ERREUR
+   ============================ */
+
+.field-error {
+    color: var(--danger-dark);
     font-size: 14px;
-    margin-top: -10px;
+    margin-top: -6px;
+    margin-bottom: 10px;
 }
+
+@media (max-width: 600px) {
+    .recipe-form button[type="submit"] {
+        width: 100%;
+        align-self: center;
+    }
+
+    .ingredient,
+    .step {
+        grid-template-columns: 1fr;
+    }
+
+    .remove-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+

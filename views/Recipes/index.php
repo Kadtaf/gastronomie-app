@@ -1,7 +1,7 @@
 <h1>Liste des recettes</h1>
 
 <div class="add-recipe-container">
-    <a href="/recipe/add" class="btn">Ajouter une recette</a>
+    <a href="/recipe/add" class="btn btn-success">Ajouter une recette</a>
 </div>
 
 <!-- Filtres -->
@@ -31,7 +31,7 @@
         <option value="60" <?= ($filters['duration'] ?? '') === '60' ? 'selected' : '' ?>>≤ 1h</option>
     </select>
 
-    <button type="submit" class="btn">Filtrer</button>
+    <button class="btn btn-primary filter-btn">Filtrer</button>
 </form>
 
 <!-- Grille -->
@@ -61,12 +61,11 @@
 
         <!-- Boutons CRUD -->
         <div class="card-actions">
-            <a href="/recipe/show/<?= $recipe->getId() ?>" class="btn-action btn-view">Voir plus</a>
-            <a href="/recipe/edit/<?= $recipe->getId() ?>" class="btn-action btn-edit">Modifier</a>
-            <a href="/recipe/delete/<?= $recipe->getId() ?>" 
-                class="btn-action btn-delete"
-                onclick="return confirm('Voulez-vous vraiment supprimer cette recette ?')">
-                Supprimer
+            <a href="/recipe/show/<?= $recipe->getId() ?>" class="btn btn-primary">Voir plus</a>
+            <a href="/recipe/edit/<?= $recipe->getId() ?>" class="btn btn-warning">Modifier</a>
+            <a href="/recipe/delete/<?= $recipe->getId() ?>" class="btn btn-danger"
+            onclick="return confirm('Voulez-vous vraiment supprimer cette recette ?')">
+            Supprimer
             </a>
         </div>
 
